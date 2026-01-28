@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <!-- Video Feed -->
+    <div class="card">
+        <h2>Live Camera Feed</h2>
+        <div style="text-align: center; background: black; border-radius: 4px; overflow: hidden;">
+            <img src="{{ url_for('video_feed') }}" width="100%" style="display: block;">
+        </div>
+        <p style="margin-top: 1rem; color: #888;">
+            <span style="color: var(--accent);">●</span> Live System Active
+        </p>
+    </div>
+
+    <!-- Info / Logs -->
+    <div class="card">
+        <h2>System Status</h2>
+        <p><strong>Mode:</strong> Detection & Recognition</p>
+        <p><strong>Database:</strong> Active</p>
+
+        <h3>Quick Actions</h3>
+        <a href="/add_user"><button style="width: 100%">+ Register New Face</button></a>
+
+        <div style="margin-top: 2rem;">
+            <h3>Attendance Log</h3>
+            <p style="font-size: 0.9rem; color: #bbb;">
+                Check <code>attendance.csv</code> for full logs.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
