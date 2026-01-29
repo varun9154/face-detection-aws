@@ -3,111 +3,35 @@
 {% block content %}
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
 
-    <!-- Browser Camera Feed -->
     <div class="card">
         <h2>Live Camera Feed</h2>
 
-        <div style="
-            position: relative;
-            background: black;
-            border-radius: 6px;
-            overflow: hidden;
-            text-align: center;
-        ">
-            <video id="video" autoplay playsinline style="width:100%;"></video>
-        </div>
-
-        <button 
-            onclick="captureFrame()" 
-            style="margin-top: 1rem; width: 100%;"
-        >
-            Capture & Recognize
-        </button>
-
-        <p style="margin-top: 1rem; color: #888;">
-            <span style="color: var(--accent);">●</span> Live System Active
-        </p>
-    </div>
-
-    <!-- System Info -->
-    <div class="card">
-        <h2>System Status</h2>
-        <p><strong>Mode:</strong> Detection & Recognition</p>
-        <p><strong>Database:</strong> Active</p>
-
-        <h3>Quick Actions</h3>
-        <a href="/add_user">
-            <button style="width: 100%">+ Register New Face</button>
-        </a>
-
-        <div style="margin-top: 2rem;">
-            <h3>Attendance Log</h3>
-            <p style="font-size: 0.9rem; color: #bbb;">
-                Attendance is stored automatically.
-                <br>
-                Check <code>attendance.csv</code> for full logs.
+        <div style="background:black; height:300px; display:flex; align-items:center; justify-content:center;">
+            <p style="color:gray;">
+                Camera disabled (HTTPS required)
             </p>
         </div>
 
-        <div id="result" style="
-            margin-top: 1rem;
-            padding: 0.5rem;
-            background: #111;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: #0f0;
-            display: none;
-        ">
+        <p style="margin-top: 1rem; color: #888;">
+            <span style="color: var(--accent);">●</span> System Running
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>System Status</h2>
+        <p><strong>Mode:</strong> Upload & Recognition</p>
+        <p><strong>Storage:</strong> AWS S3</p>
+
+        <h3>Quick Actions</h3>
+        <a href="/add_user">
+            <button style="width: 100%">+ Register New User</button>
+        </a>
+
+        <div style="margin-top: 2rem;">
+            <h3>Attendance</h3>
+            <p style="color:#bbb">Stored in CSV / S3</p>
         </div>
     </div>
+
 </div>
-
-<!-- Camera Script -->
-<script>
-const video = document.getElementById("video");
-const resultBox = document.getElementById("result");
-
-// Start browser camera
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        video.srcObject = stream;
-    })
-    .catch(err => {
-        alert("Camera access denied or not available.");
-        console.error(err);
-    });
-
-function captureFrame() {
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0);
-
-    canvas.toBlob(blob => {
-        const formData = new FormData();
-        formData.append("image", blob);
-
-        fetch("/upload_frame", {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            resultBox.style.display = "block";
-            if (data.faces.length > 0) {
-                resultBox.innerHTML = "Detected: <b>" + data.faces.join(", ") + "</b>";
-            } else {
-                resultBox.innerHTML = "No face detected";
-            }
-        })
-        .catch(err => {
-            resultBox.style.display = "block";
-            resultBox.innerHTML = "Error processing frame";
-            console.error(err);
-        });
-    }, "image/jpeg");
-}
-</script>
-
 {% endblock %}

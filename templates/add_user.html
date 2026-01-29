@@ -5,7 +5,7 @@
     <h2>Register New User</h2>
     <p>Upload a clear photo of the person's face.</p>
 
-    <form action="/add_user" method="post" enctype="multipart/form-data">
+    <form id="addUserForm" enctype="multipart/form-data">
         <label>Full Name</label>
         <input type="text" name="name" required placeholder="Ex: John Doe">
 
@@ -17,11 +17,51 @@
         <br><br>
 
         <label>Photo</label>
-        <input type="file" name="file" accept=".jpg, .jpeg, .png" required style="background: white; color: black;">
+        <input type="file" name="file" accept=".jpg, .jpeg, .png" required
+               style="background: white; color: black;">
 
         <br><br>
 
-        <button type="submit" style="width: 100%; font-size: 1.1rem;">Register & Train</button>
+        <button type="submit" style="width: 100%; font-size: 1.1rem;">
+            Register & Train
+        </button>
     </form>
+
+    <!-- SUCCESS / ERROR MESSAGE -->
+    <p id="message" style="margin-top:15px; font-weight:bold;"></p>
 </div>
+
+<script>
+document.getElementById("addUserForm").addEventListener("submit", async function (e) {
+    e.preventDefault(); // stop page reload
+
+    const formData = new FormData(this);
+    const message = document.getElementById("message");
+
+    message.style.color = "white";
+    message.innerText = "Uploading...";
+
+    try {
+        const response = await fetch("/add_user", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            message.style.color = "lightgreen";
+            message.innerText = data.message;
+            this.reset();
+        } else {
+            message.style.color = "red";
+            message.innerText = data.message;
+        }
+
+    } catch (error) {
+        message.style.color = "red";
+        message.innerText = "Server error. Please try again.";
+    }
+});
+</script>
 {% endblock %}
