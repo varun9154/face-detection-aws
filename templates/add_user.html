@@ -17,50 +17,48 @@
         <br><br>
 
         <label>Photo</label>
-        <input type="file" name="file" accept=".jpg, .jpeg, .png" required
-               style="background: white; color: black;">
+        <input type="file" name="file" accept=".jpg,.jpeg,.png" required
+               style="background:white;color:black;">
 
         <br><br>
 
-        <button type="submit" style="width: 100%; font-size: 1.1rem;">
+        <button type="submit" style="width:100%;font-size:1.1rem;">
             Register & Train
         </button>
     </form>
 
-    <!-- SUCCESS / ERROR MESSAGE -->
-    <p id="message" style="margin-top:15px; font-weight:bold;"></p>
+    <p id="message" style="margin-top:15px;font-weight:bold;"></p>
 </div>
 
 <script>
-document.getElementById("addUserForm").addEventListener("submit", async function (e) {
-    e.preventDefault(); // stop page reload
+document.getElementById("addUserForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
+    const msg = document.getElementById("message");
     const formData = new FormData(this);
-    const message = document.getElementById("message");
 
-    message.style.color = "white";
-    message.innerText = "Uploading...";
+    msg.style.color = "white";
+    msg.innerText = "Uploading...";
 
     try {
-        const response = await fetch("/add_user", {
+        const res = await fetch("/add_user", {
             method: "POST",
             body: formData
         });
 
-        const data = await response.json();
+        const data = await res.json();
 
         if (data.success) {
-            message.style.color = "lightgreen";
-            message.innerText = data.message;
+            msg.style.color = "lightgreen";
+            msg.innerText = data.message;
             this.reset();
         } else {
-            message.style.color = "red";
-            message.innerText = data.message;
+            msg.style.color = "red";
+            msg.innerText = data.message;
         }
-
-    } catch (error) {
-        message.style.color = "red";
-        message.innerText = "Server error. Please try again.";
+    } catch (err) {
+        msg.style.color = "red";
+        msg.innerText = "Server error. Please try again.";
     }
 });
 </script>
